@@ -1,3 +1,13 @@
+# Ignorar arquivos de configuração sensíveis
+.env
+
+# Ignorar pastas de cache do Python
+__pycache__/
+*.pyc
+
+# Se você usar ambiente virtual
+venv/
+.venv/
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
