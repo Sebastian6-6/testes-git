@@ -1,3 +1,5 @@
+# Script de processamento principal - v1.0.1
+
 import os
 from dotenv import load_dotenv
 
