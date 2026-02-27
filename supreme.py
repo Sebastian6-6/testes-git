@@ -1,3 +1,5 @@
+# Script de processamento principal - v1.0.1
+
 import os
 from dotenv import load_dotenv
 
@@ -54,3 +56,15 @@ def verificacao_supreme():
     else: 
         print(f"\nVocê escolheu errado: {escolhas_nomes} \nTente outra vez!")
         return False
+
+
+def calcular_fatorial(n):
+    if n < 0:
+        return "Erro: Fatorial não existe para números negativos."
+    elif n == 0 or n == 1:
+        return 1
+    else:
+        resultado = 1
+        for i in range(2, n + 1):
+            resultado *= i
+        return resultado
