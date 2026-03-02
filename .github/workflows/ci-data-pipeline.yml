@@ -21,10 +21,9 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
-
-    # 4. Instalação de dependências (Pandas, Pytest, Boto3, etc.)
+# 4. Instalação de dependências (Pandas, Pytest, Boto3, etc.)
     - name: Install dependencies
-    run: |
+      run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
