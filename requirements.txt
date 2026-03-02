@@ -3,3 +3,5 @@ boto3
 python-dotenv
 pytest
 flake8
+pyspark==3.3.0
+aws-glue-libs-stubs
