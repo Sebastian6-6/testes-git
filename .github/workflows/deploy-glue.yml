@@ -1,0 +1,40 @@
+name: CD Glue Job - Auto Deploy & Run
+
+on:
+  push:
+    branches:
+      - main  # Link oficial com a branch principal
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy-and-run:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      # 1. Sincroniza o script com o S3
+      - name: Upload Script to S3
+        run: |
+          aws s3 cp cola.py s3://seu-bucket-scripts-tdw/artifacts/cola.py
+
+      # 2. Atualiza a definição do Job no AWS Glue
+      # Nota: O Job já deve ter sido criado uma vez no console ou via CLI
+      - name: Update Glue Job
+        run: |
+          aws glue update-job --job-name "job-test-cola" --job-update \
+          "Role=GlueServiceRole,Command={Name=glueetl,ScriptLocation=s3://seu-bucket-scripts-tdw/artifacts/cola.py,PythonVersion=3}"
+
+      # 3. Dispara a execução (Run) do Job automaticamente
+      - name: Start Glue Job Run
+        run: |
+          aws glue start-job-run --job-name "job-test-cola"
