@@ -25,7 +25,7 @@ jobs:
       # 1. Sincroniza o script com o S3
       - name: Upload Script to S3
         run: |
-          aws s3 cp cola.py s3://seu-bucket-scripts-tdw/artifacts/cola.py
+          aws s3 cp cola.py s3://scripts-automacao-pedro/artifacts/cola.py
 
       # 2. Atualiza a definição do Job no AWS Glue
       # Nota: O Job já deve ter sido criado uma vez no console ou via CLI
