@@ -24,9 +24,9 @@ jobs:
 
     # 4. Instalação de dependências (Pandas, Pytest, Boto3, etc.)
     - name: Install dependencies
-      run: |
+    run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest pandas boto3
+        pip install -r requirements.txt
 
     # 5. Validação de Sintaxe (Linter) - Garante que o supreme.py segue as boas práticas
     - name: Lint with flake8
