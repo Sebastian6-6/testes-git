@@ -32,7 +32,7 @@ jobs:
       - name: Update and Run Glue Job
         run: |
           aws glue update-job --job-name "job-test-cola" --job-update \
-          "Role=GlueServiceRole-TDW, \
+          "Role=GlueServiceRole, \
           GlueVersion=4.0, \
           NumberOfWorkers=2, \
           WorkerType=G.1X, \
