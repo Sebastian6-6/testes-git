@@ -22,7 +22,9 @@ spark = glueContext.spark_session
 job = Job(glueContext)
 job.init(args['JOB_NAME'], args)
 
-print(f"--- Iniciando Processamento TDW - {datetime.now()} ---")
+
+print(f"--- Iniciando Processamento - {datetime.now()} ---")
+
 
 # 2. Criando dados em memória (Sem custo de leitura de S3)
 data = [

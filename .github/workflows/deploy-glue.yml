@@ -3,7 +3,7 @@ name: CD Glue Job - Auto Deploy & Run
 on:
   push:
     branches:
-      - main  # Link oficial com a branch principal
+      - main
 
 permissions:
   id-token: write
@@ -22,19 +22,20 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: us-east-2
 
-      # 1. Sincroniza o script com o S3
-      - name: Upload Script to S3
+      - name: Deploy and Execute
         run: |
+          # 1. Validação de segurança local
+          if [ ! -f cola.py ]; then echo "Erro: Arquivo cola.py não encontrado no repositório!"; exit 1; fi
+          
+          # 2. Upload para S3 (O comando 'cp' força a sobrescrita da versão antiga)
           aws s3 cp cola.py s3://scripts-automacao-pedro/artifacts/cola.py
-
-      # 2. Atualiza a definição do Job no AWS Glue
-      # Nota: O Job já deve ter sido criado uma vez no console ou via CLI
-      - name: Update Glue Job
-        run: |
-          aws glue update-job --job-name "job-test-cola" --job-update \
-          "Role=GlueServiceRole,Command={Name=glueetl,ScriptLocation=s3://seu-bucket-scripts-tdw/artifacts/cola.py,PythonVersion=3}"
-
-      # 3. Dispara a execução (Run) do Job automaticamente
-      - name: Start Glue Job Run
-        run: |
+          
+          # 3. Atualização do Job (Sintaxe de linha única para evitar erros de espaço/caracteres invisíveis)
+          # Nota: Usei o ARN completo da Role e PythonVersion=3 (padrão estável do Glue 4.0)
+          aws glue update-job --job-name "job-test-cola" --job-update "Role=arn:aws:iam::338578590490:role/GlueServiceRole,GlueVersion=4.0,NumberOfWorkers=2,WorkerType=G.1X,Command={Name=glueetl,ScriptLocation=s3://scripts-automacao-pedro/artifacts/cola.py,PythonVersion=3},DefaultArguments={--JOB_NAME=job-test-cola}"
+          
+          # 4. Pequena pausa (Cooldown) para garantir que o Metadata da AWS atualizou
+          sleep 5
+          
+          # 5. Disparo do Job
           aws glue start-job-run --job-name "job-test-cola"
